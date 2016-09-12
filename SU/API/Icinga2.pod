@@ -1,0 +1,133 @@
+=head1 NAME
+
+SU::API::Icinga2
+
+=head1 SYNOPSIS
+
+    use strict;
+    use warnings;
+
+    use SU::API::Icinga2;
+
+    my $icinga = new SU::API::Icinga2("fqdn","port","path","version");
+    $icinga->login("username","password") or die $icinga->login_status;
+
+    my $host_object = {
+                        'attrs' => {
+                                     'address'       => "127.0.0.1",
+                                     'check_command' => "hostalive"
+                                   }
+                       };
+
+
+    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com"", "", $put_data);
+    if (!$post_result) {
+        warn $icinga->request_code;
+        warn $icinga->request_status_line;
+    };
+
+    my $get_result = $icinga->do_request("GET", "/objects/hosts/localhost.example.com");
+    if (!$get_result) {
+        warn $icinga->request_code;
+        warn $icinga->request_status_line;
+    };
+
+    my $delete_result = $icinga->do_request("DELETE", "/objects/hosts/localhost.example.com");
+    if (!$delete_result) {
+        warn $icinga->request_code;
+        warn $icinga->request_status_line;
+    };
+
+    $icinga->logout();
+
+=head1 DESCRIPTION
+
+Module used to integrate with the REST API that Icinga2 provides.
+
+=head1 CONSTRUCTOR
+
+=over
+
+=item new (FQDN, PORT, PATH, VERSION, INSECURE)
+
+Returns a new SU::API::Icinga object.
+
+=back
+
+=head1 METHODS
+
+=over
+
+=item login (USERNAME, PASSWORD)
+
+Configure and validate credantials.
+
+=item logout
+
+Destroy the login session.
+
+=item login_status
+
+Returns a human readable login status of the current session.
+
+=item logged_in
+
+Returns true when logged in, otherwise returns undef.
+
+=item do_request (HTTP METHOD, URI, PARAMS, DATA)
+
+Perform the actual request.
+
+"PARAMS" is optional and can be any parameters that the Icinga API supports.
+
+"DATA" is optional and is a Perl data structure that will be converted to JSON.
+
+Returns the result in a perl reference.
+
+=item request_code
+
+Returns the last HTTP status code.
+
+=item request_status_line
+
+Returns the last HTTP status line.
+
+=back
+
+=head1 DEPENDS
+
+L<LWP::UserAgent>,
+L<HTTP::Request>,
+L<URI::Escape>,
+L<JSON>
+
+=head1 LICENSE
+
+Copyright (c) 2016-, IT Services, Stockholm University
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of Stockholm University nor the names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+=head1 AUTHOR
+
+Johan Carlquist <jocar@su.se>,
+Mikael Nordin kano0049@su.se
