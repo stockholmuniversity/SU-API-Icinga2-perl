@@ -1,4 +1,4 @@
-package SU::API::Icinga;
+package SU::API::Icinga2;
 
 use strict;
 use warnings;
