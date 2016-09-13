@@ -52,6 +52,12 @@ Module used to integrate with the REST API that Icinga2 provides.
 
 Returns a new SU::API::Icinga object.
 
+"PATH" is the URI where to find the API. Usually "/".
+
+"VERSION" should be set to the API version. Usually "1".
+
+"INSECURE" is optional and makes this module skip certificate verification if set.
+
 =back
 
 =head1 METHODS
