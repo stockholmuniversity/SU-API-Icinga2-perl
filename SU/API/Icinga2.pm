@@ -18,7 +18,7 @@ sub new {
         insecure => shift,
     };
 
-    if (!$path ~= /\/$/) {
+    if ($path !~ /\/$/) {
         $path .= "/";
     }
     $self->{url} = "https://$self->{hostname}:$self->{port}$self->{path}v$self->{version}";
