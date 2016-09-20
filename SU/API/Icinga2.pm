@@ -18,7 +18,10 @@ sub new {
         insecure => shift,
     };
 
-    $self->{url} = "https://$self->{hostname}:$self->{port}$self->{path}/v$self->{version}";
+    if (!$path ~= /\/$/) {
+        $path .= "/";
+    }
+    $self->{url} = "https://$self->{hostname}:$self->{port}$self->{path}v$self->{version}";
 
     if ($self->{insecure}) {
         $self->{ua} = LWP::UserAgent->new( ssl_opts => {verify_hostname => 0 } );
