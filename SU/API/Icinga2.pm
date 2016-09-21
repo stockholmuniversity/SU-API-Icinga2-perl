@@ -66,7 +66,7 @@ sub do_request {
     return undef;
 };
 
-sub encode_filter {
+sub encode_params {
     my $filter = $_[0];
     my @filter_array;
     my @encoded_uri_array;
