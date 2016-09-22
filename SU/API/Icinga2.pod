@@ -105,7 +105,8 @@ Returns the last HTTP status line.
 L<LWP::UserAgent>,
 L<HTTP::Request>,
 L<URI::Escape>,
-L<JSON>
+L<JSON>,
+L<Encode>
 
 =head1 LICENSE
 
