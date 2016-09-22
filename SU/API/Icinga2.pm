@@ -7,6 +7,7 @@ use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
 use JSON;
+use Encode qw( encode_utf8 );
 
 sub new {
     my $class = shift;
@@ -58,7 +59,8 @@ sub do_request {
     if (!$self->{res}->is_success) {
         return undef;
     };
-    my $json_result = decode_json($self->{res}->content);
+    # Handle non utf8 chars
+    my $json_result = decode_json(encode_utf8($self->{res}->content));
 
     if ($json_result) {
         return $json_result;
