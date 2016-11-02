@@ -66,7 +66,7 @@ Returns a new SU::API::Icinga object.
 
 =item login (USERNAME, PASSWORD)
 
-Configure and validate credantials. Pleas not that user needs at least the permission
+Configure and validate credantials. Please note that user needs at least the permission
 "status/query"
 
 =item logout
