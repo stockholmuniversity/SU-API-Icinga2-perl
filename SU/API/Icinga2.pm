@@ -38,7 +38,7 @@ sub new {
 };
 
 sub do_request {
-    my ($self,$method,$uri,$params,$data) = @_;
+    my ($self,$method,$uri,$params,$data, $plaintext) = @_;
 
     my $request_url;
     $request_url = "$self->{url}/${uri}";
@@ -59,9 +59,17 @@ sub do_request {
     if (!$self->{res}->is_success) {
         return undef;
     };
+    
+    # Try with first plaintext if plaintext is set
+    if($plaintext) {
+        my $str = encode_utf8($self->{res}->content);
+        if($str) {
+            return $str;
+        }
+    }
+
     # Handle non utf8 chars
     my $json_result = decode_json(encode_utf8($self->{res}->content));
-
     if ($json_result) {
         return $json_result;
     };
