@@ -20,7 +20,13 @@ SU::API::Icinga2
                        };
 
 
-    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com"", "", $put_data);
+    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com", "", $put_data);
+    if (!$put_result) {
+        warn $icinga->request_code;
+        warn $icinga->request_status_line;
+    };
+    
+    my $post_result = $icinga->do_request("POST", "/objects/hosts/localhost.example.com", "", $post_data);
     if (!$post_result) {
         warn $icinga->request_code;
         warn $icinga->request_status_line;
