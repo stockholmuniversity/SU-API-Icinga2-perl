@@ -20,7 +20,13 @@ SU::API::Icinga2
                        };
 
 
-    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com"", "", $put_data);
+    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com", "", $host_object);
+    if (!$put_result) {
+        warn $icinga->request_code;
+        warn $icinga->request_status_line;
+    };
+    
+    my $post_result = $icinga->do_request("POST", "/objects/hosts/localhost.example.com", "",$host_object);
     if (!$post_result) {
         warn $icinga->request_code;
         warn $icinga->request_status_line;
@@ -91,6 +97,18 @@ Perform the actual request.
 
 Returns the result in a perl reference.
 
+=item export (FULL, API_ONLY)
+
+Returns a Perl Data structure without unneccessary meta data. $icinga->export can
+only be called after do_request.
+
+"FULL" is optional and if it is true, write once attributes will be included in
+the export. Objects exported with FULL set to true can be converted to json and be
+used for PUT requests, but not neccessarily for POST requests.
+
+"API_ONLY" is optional and if it is true only objects created via the API
+will be exported.
+
 =item request_code
 
 Returns the last HTTP status code.
@@ -138,4 +156,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =head1 AUTHOR
 
 Johan Carlquist <jocar@su.se>,
-Mikael Nordin <kano0049@su.se>
+Mikael Nordin <mikael.nordin@su.se>
