@@ -100,7 +100,10 @@ Returns the result in a perl reference.
 =item export (FULL, API_ONLY)
 
 Returns a Perl Data structure without unneccessary meta data. $icinga->export can
-only be called after do_request.
+only be called after do_request. The name of the object is stored in 
+$object->{attrs}{vars}{__export_name} so that you can access if you need it, please 
+note that you can't use this variable name for other things if you whis to use this library
+as it will be overwritten in the exported object.
 
 "FULL" is optional and if it is true, write once attributes will be included in
 the export. Objects exported with FULL set to true can be converted to json and be
