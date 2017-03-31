@@ -210,6 +210,9 @@ sub export {
     }
     my @results;
     foreach my $object ( @{ $result->{results} } ) {
+        # The object needs to know its own name stored in a read/write field
+        $object->{attrs}{vars}{__export_name} = $object->{attrs}{__name};
+        
         my %hash;
         foreach my $key (sort @keys) {
             $hash{attrs}{$key} = $object->{attrs}{$key};
