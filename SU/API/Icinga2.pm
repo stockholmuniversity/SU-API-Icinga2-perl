@@ -133,7 +133,8 @@ sub export {
             "event_command",  "action_url",
             "notes",          "notes_url",
             "vars",           "icon_image",
-            "icon_image_alt", "check_interval"
+            "icon_image_alt", "check_interval",
+            "max_check_attempts", "retry_interval"
         );
         if ($full) {
             push @keys,
