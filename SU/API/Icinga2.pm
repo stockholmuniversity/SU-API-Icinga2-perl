@@ -224,39 +224,10 @@ sub login {
     return $self->{logged_in};
 }
 
-sub logout {
-    my ($self) = @_;
-    $self->{logged_in} = undef;
-}
-
-sub request_code {
-    my ($self) = @_;
-    return $self->{res}->code;
-}
-
-sub request_status_line {
-    my ($self) = @_;
-    return $self->{res}->status_line;
-}
-
-sub logged_in {
-    my ($self) = @_;
-    return $self->{logged_in};
-}
-
-sub login_status {
-    my ($self) = @_;
-    return $self->{login_status};
-}
-
-sub DESTROY {
-    my ($self) = @_;
-    if ( $self->{ua} && $self->{logged_in} ) {
-        $self->logout();
-    }
-    elsif ( $self->{logged_in} ) {
-        warn "Automatic logout failed";
-    }
-}
+sub logout { shift->{logged_in} = undef; }
+sub request_code { return shift->{res}->code; }
+sub request_status_line { return shift->{res}->status_line; }
+sub logged_in { return shift->{logged_in}; }
+sub login_status { return shift->{login_status}; }
 
 1;
