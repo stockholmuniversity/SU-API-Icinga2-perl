@@ -8,6 +8,7 @@ use HTTP::Request;
 use URI::Escape;
 use JSON;
 use Encode qw( encode_utf8 );
+use version 0.77; our $VERSION = version->declare('v0.1.0');
 
 sub new {
     my $class = shift;
