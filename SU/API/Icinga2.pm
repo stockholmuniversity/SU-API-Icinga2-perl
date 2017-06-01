@@ -2,42 +2,58 @@ package SU::API::Icinga2;
 
 use strict;
 use warnings;
-
+use 5.010_001;
+use Carp;
 use LWP::UserAgent;
 use HTTP::Request;
 use URI::Escape;
 use JSON;
 use Encode qw( encode_utf8 );
+use Scalar::Util 'looks_like_number';
 use version 0.77; our $VERSION = version->declare('v0.1.0');
 
 sub new {
-    my $class = shift;
-    my $self  = {
-        hostname => shift,
-        port     => shift,
-        path     => shift,
-        version  => shift,
-        insecure => shift,
-    };
+    my ($class, $hostname, $port, $path, $version, $insecure) = @_;
 
-    if ( $self->{path} !~ /\/$/ ) {
-        $self->{path} .= "/";
-    }
-    $self->{url} =
-      "https://$self->{hostname}:$self->{port}$self->{path}v$self->{version}";
+    defined $hostname
+        or croak "hostname argument is required";
 
-    if ( $self->{insecure} ) {
-        $self->{ua} =
-          LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 } );
+    unless( looks_like_number($port) ) {
+        # enable hash-style arg passing
+        my %args = @_[2..$#_];
+        $port = $args{port};
+        $path = $args{path};
+        $version = $args{version};
+        $insecure = $args{insecure};
     }
-    else {
-        $self->{ua} = LWP::UserAgent->new;
-    }
+
+    my $self  = bless {
+        hostname => $hostname,
+        port     => $port // 5665,
+        path     => $path // '/',
+        version  => $version // 1,
+    }, $class;
+
+    $self->{path} .= "/" unless $self->{path} =~ /\/$/;
+
+    $self->{url} = sprintf(
+        "https://%s:%d%sv%d",
+        @$self{qw/ hostname port path version /}
+    );
+
+    $self->{ua} = LWP::UserAgent->new(
+        $insecure ? (
+            ssl_opts => {
+                # Don't verify certs with either SSL module used by LWP
+                verify_hostname => 0,
+                SSL_verify_callback => sub { 1 },
+            },
+        ) : (),
+    );
 
     $self->{ua}->default_header( 'Accept' => 'application/json' );
     $self->{login_status} = "not logged in";
 
-    bless $self, $class;
     return $self;
 }
 
