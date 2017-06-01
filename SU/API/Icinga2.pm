@@ -76,9 +76,7 @@ sub do_request {
 
     $self->{res} = $self->{ua}->request($req);
 
-    if ( !$self->{res}->is_success ) {
-        return undef;
-    }
+    return unless $self->{res}->is_success;
 
     # Try with first plaintext if plaintext is set
     if ($plaintext) {
@@ -93,7 +91,7 @@ sub do_request {
     if ($json_result) {
         return $json_result;
     }
-    return undef;
+    return;
 }
 
 sub encode_params {
@@ -120,133 +118,84 @@ sub encode_params {
     return join( "&", @encoded_uri_array );
 }
 
-sub export {
-
-    my ( $self, $full, $api_only ) = @_;
-    my $result        = decode_json( encode_utf8( $self->{res}->content ) );
-    my $type          = $result->{results}[0]{type};
-    my @allowed_types = (
-        "CheckCommand", "Host",       "HostGroup", "Service",
-        "ServiceGroup", "TimePeriod", "User",      "UserGroup"
+{
+    my %type2keys = (
+        CheckCommand => [
+            [ qw/ arguments command env vars timeout / ],
+            [ qw/ templates zone / ],
+        ],
+        Host => [
+            [ qw/ address6 address check_command display_name event_command
+                action_url notes notes_url vars icon_image icon_image_alt
+                check_interval max_check_attempts retry_interval /
+            ],
+            [ qw/ check_period check_timeout enable_active_checks
+                enable_event_handler enable_flapping enable_notifications
+                enable_passive_checks enable_perfdata groups notes
+                retry_interval templates zone /
+            ],
+        ],
+        HostGroup => [
+            [ qw/ action_url display_name notes notes_url vars / ],
+            [ qw/ groups templates zone / ],
+        ],
+        Service => [
+            [ qw/ vars action_url check_command check_interval display_name
+                notes notes_url event_command max_check_attempts
+                retry_interval /
+            ],
+            [ qw/ check_period check_timeout enable_active_checks
+                enable_event_handler enable_flapping enable_notifications
+                enable_passive_checks enable_perfdata groups icon_image
+                icon_image_alt notes templates zone /
+            ],
+        ],
+        ServiceGroup => [
+            [ qw/ action_url display_name notes notes_url vars / ],
+            [ qw/ groups templates zone / ],
+        ],
+        TimePeriod => [
+            [ qw/ display_name excludes includes prefer_includes
+                ranges vars /
+            ],
+            [ qw/ templates zone / ],
+        ],
+        User => [
+            [ qw/ display_name email enable_notifications pager states
+                period vars /
+            ],
+            [ qw/ groups templates zone / ],
+        ],
+        UserGroup => [
+            [ qw/ display_name vars / ],
+            [ qw/ groups templates zone / ],
+        ],
     );
 
-    # We only support certain object types
-    unless ( grep( /$type/, @allowed_types ) ) {
-        return undef;
-    }
+    sub export {
+        my ( $self, $full, $api_only ) = @_;
+        my $result = decode_json( encode_utf8( $self->{res}->content ) );
+        my $type   = $result->{results}[0]{type};
 
-    my @keys;
+        # We only support certain object types
+        return unless exists $type2keys{$type};
 
-    if ( $type eq "CheckCommand" ) {
-        @keys = ( "arguments", "command", "env", "vars", "timeout" );
-        if ($full) {
-            push @keys, ( "templates", "zone" );
-        }
-    }
-    elsif ( $type eq "Host" ) {
-        @keys = (
-            "address6",       "address",
-            "check_command",  "display_name",
-            "event_command",  "action_url",
-            "notes",          "notes_url",
-            "vars",           "icon_image",
-            "icon_image_alt", "check_interval",
-            "max_check_attempts", "retry_interval"
-        );
-        if ($full) {
-            push @keys,
-              (
-                "check_period",          "check_timeout",
-                "enable_active_checks",  "enable_event_handler",
-                "enable_flapping",       "enable_notifications",
-                "enable_passive_checks", "enable_perfdata",
-                "groups",                "notes",
-                "retry_interval",        "templates",
-                "zone"
-              );
-        }
-    }
-    elsif ( $type eq "HostGroup" ) {
-        @keys = ( "action_url", "display_name", "notes", "notes_url", "vars" );
-        if ($full) {
-            push @keys, ( "groups", "templates", "zone" );
-        }
-    }
-    elsif ( $type eq "Service" ) {
-        @keys = (
-            "vars",               "action_url",
-            "check_command",      "check_interval",
-            "display_name",       "notes",
-            "notes_url",          "event_command",
-            "max_check_attempts", "retry_interval"
-        );
-        if ($full) {
-            push @keys,
-              (
-                "check_period",          "check_timeout",
-                "enable_active_checks",  "enable_event_handler",
-                "enable_flapping",       "enable_notifications",
-                "enable_passive_checks", "enable_perfdata",
-                "groups",                "icon_image",
-                "icon_image_alt",        "notes",
-                "templates",             "zone"
-              );
-        }
-    }
-    elsif ( $type eq "ServiceGroup" ) {
-        @keys = ( "action_url", "display_name", "notes", "notes_url", "vars" );
-        if ($full) {
-            push @keys, ( "groups", "templates", "zone" );
-        }
-    }
-    elsif ( $type eq "TimePeriod" ) {
-        @keys = (
-            "display_name", "excludes",
-            "includes",     "prefer_includes",
-            "ranges",       "vars"
-        );
-        if ($full) {
-            push @keys, ( "templates", "zone" );
-        }
-    }
-    elsif ( $type eq "User" ) {
-        @keys = (
-            "display_name",         "email",
-            "enable_notifications", "pager",
-            "states",               "period",
-            "vars"
-        );
-        if ($full) {
-            push @keys, ( "groups", "templates", "zone" );
-        }
-    }
-    elsif ( $type eq "UserGroup" ) {
-        @keys = ( "display_name", "vars" );
-        if ($full) {
-            push @keys, ( "groups", "templates", "zone" );
-        }
-    }
-    my @results;
-    foreach my $object ( @{ $result->{results} } ) {
-        # The object needs to know its own name stored in a read/write field
-        $object->{attrs}{vars}{__export_name} = $object->{attrs}{__name};
-        
-        my %hash;
-        foreach my $key (sort @keys) {
-            $hash{attrs}{$key} = $object->{attrs}{$key};
-        }
-        if ($api_only) {
-            if ($object->{attrs}{package} eq "_api") {
-                push @results, \%hash;
-            }
-        }
-        else {
-            push @results, \%hash;
-        }
+        my @keys = @{$type2keys{$type}[0]};
+        push @keys, @{$type2keys{$type}[1]} if $full;
 
-    }
-    return \@results;
+        my @results;
+        foreach my $object ( @{ $result->{results} } ) {
+            next if $api_only and $object->{attrs}{package} ne "_api";
 
+            # The object needs to know its own name stored in a read/write field
+            $object->{attrs}{vars}{__export_name} = $object->{attrs}{__name};
+
+            my %attrs;
+            @attrs{@keys} = @{$object->{attrs}}{@keys};
+            push @results, { attrs => \%attrs };
+        }
+        return \@results;
+    }
 }
 
 sub login {
