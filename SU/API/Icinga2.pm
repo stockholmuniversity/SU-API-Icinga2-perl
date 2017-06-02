@@ -68,13 +68,9 @@ sub new {
 sub do_request {
     my ( $self, $method, $uri, $params, $data, $plaintext ) = @_;
 
-    my $request_url;
-    $request_url = "$self->{url}/${uri}";
+    my $request_url = "$self->{url}/$uri";
+    $request_url .= '?' . _encode_params($params) if $params;
 
-    if ($params) {
-        $params      = _encode_params($params);
-        $request_url = "$self->{url}/${uri}?$params";
-    }
     my $req = HTTP::Request->new( $method => $request_url );
 
     if ($data) {
@@ -193,11 +189,10 @@ sub _encode_param {
 sub login {
     my ( $self, $username, $password ) = @_;
 
-    $self->{username} = $username;
-    $self->{password} = $password;
+    return if $self->{logged_in};
 
     $self->{ua}->credentials( "$self->{hostname}:$self->{port}",
-        "Icinga 2", $self->{username}, $self->{password} );
+        "Icinga 2", $username, $password );
 
     $self->do_request( "GET", "/status", "", "" );
 
