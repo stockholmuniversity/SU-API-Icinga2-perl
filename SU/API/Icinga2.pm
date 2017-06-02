@@ -103,7 +103,7 @@ sub do_request {
 }
 
 sub encode_params {
-    my $filter = $_[0];
+    my ($filter) = @_;
     my @filter_array;
     my @encoded_uri_array;
 
