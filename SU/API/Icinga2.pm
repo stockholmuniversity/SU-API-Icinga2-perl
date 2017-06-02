@@ -72,7 +72,7 @@ sub do_request {
     $request_url = "$self->{url}/${uri}";
 
     if ($params) {
-        $params      = encode_params($params);
+        $params      = _encode_params($params);
         $request_url = "$self->{url}/${uri}?$params";
     }
     my $req = HTTP::Request->new( $method => $request_url );
@@ -102,28 +102,12 @@ sub do_request {
     return;
 }
 
-sub encode_params {
-    my ($filter) = @_;
-    my @filter_array;
-    my @encoded_uri_array;
+sub _encode_params {
+    return join '&', map { _encode_param($_) } split /&/, shift;
+}
 
-    if ( $filter =~ /&/ ) {
-        @filter_array = split( '&', $filter );
-    }
-    else {
-        @filter_array = $filter;
-    }
-    for (@filter_array) {
-        if ( $_ =~ /=/ ) {
-            my ( $argument, $value ) = split( "=", $_ );
-            push( @encoded_uri_array,
-                join( "=", uri_escape($argument), uri_escape($value) ) );
-        }
-        else {
-            push( @encoded_uri_array, uri_escape($_) );
-        }
-    }
-    return join( "&", @encoded_uri_array );
+sub _encode_param {
+    return join '=', map { uri_escape( $_ ) } split /=/, shift;
 }
 
 {
