@@ -14,6 +14,7 @@ use version 0.77; our $VERSION = version->declare('v0.1.0');
 
 sub new {
     my ($class, $hostname, $port, $path, $version, $insecure) = @_;
+    my $cafile;
 
     defined $hostname
         or croak "hostname argument is required";
@@ -25,6 +26,11 @@ sub new {
         $path = $args{path};
         $version = $args{version};
         $insecure = $args{insecure};
+
+        if(defined $args{cacert}) {
+            # Set ENV variable in case we're using Net::SSL for LWP's HTTPS
+            $cafile = $ENV{HTTPS_CA_FILE} = $args{cacert};
+        }
     }
 
     my $self  = bless {
@@ -47,6 +53,8 @@ sub new {
                 # Don't verify certs with either SSL module used by LWP
                 verify_hostname => 0,
                 SSL_verify_callback => sub { 1 },
+                # Set ca_file for IO::Socket::SSL
+                defined $cafile ? ( SSL_ca_file => $cafile) : (),
             },
         ) : (),
     );
