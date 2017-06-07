@@ -9,42 +9,35 @@ SU::API::Icinga2
 
     use SU::API::Icinga2;
 
-    my $icinga = new SU::API::Icinga2("fqdn","port","path","version");
+    my $icinga = new SU::API::Icinga2("fqdn",
+	port => $port,
+	path => $path,
+	version => $version,
+	cacert => $cacert_file,
+    );
     $icinga->login("username","password") or die $icinga->login_status;
 
     my $host_object = {
-                        'attrs' => {
-                                     'address'       => "127.0.0.1",
-                                     'check_command' => "hostalive"
-                                   }
-                       };
+	attrs => {
+	    address => "127.0.0.1",
+            check_command => "hostalive"
+        }
+    };
 
 
     my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com", "", $host_object);
-    if (!$put_result) {
-        warn $icinga->request_code;
-        warn $icinga->request_status_line;
-    };
-    
+        or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
+
     my $post_result = $icinga->do_request("POST", "/objects/hosts/localhost.example.com", "",$host_object);
-    if (!$post_result) {
-        warn $icinga->request_code;
-        warn $icinga->request_status_line;
-    };
+        or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
     my $get_result = $icinga->do_request("GET", "/objects/hosts/localhost.example.com");
-    if (!$get_result) {
-        warn $icinga->request_code;
-        warn $icinga->request_status_line;
-    };
+        or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
     my $delete_result = $icinga->do_request("DELETE", "/objects/hosts/localhost.example.com");
-    if (!$delete_result) {
-        warn $icinga->request_code;
-        warn $icinga->request_status_line;
-    };
+        or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
-    $icinga->logout();
+    $icinga->logout;
 
 =head1 DESCRIPTION
 
@@ -54,15 +47,50 @@ Module used to integrate with the REST API that Icinga2 provides.
 
 =over
 
-=item new (FQDN, PORT, PATH, VERSION, INSECURE)
+=item new (FQDN, [ tags ])
+
+=item new (FQDN, PORT, PATH, VERSION, [ INSECURE ])
 
 Returns a new SU::API::Icinga object.
 
-"PATH" is the URI where to find the API. Usually "/".
+The former calling convention with four mandatory arguments is the old one. If a
+port number is present after the Icinga host, the constructor assumes you want
+this form. The arguments are:
 
-"VERSION" should be set to the API version. Usually "1".
+=over
 
-"INSECURE" is optional and makes this module skip certificate verification if set.
+=item * FQDN is your Icinga monitoring host.
+
+=item * PORT is the port the REST API runs on.
+
+=item * PATH is the URI where to find the API, usually "/".
+
+=item * VERSION should be set to the API version, usually 1.
+
+=item * INSECURE is optional and makes this module skip certificate verification if set.
+
+=back
+
+The latter form treats only the FQDN as mandatory and allows all other arguments
+to be passed hash style with the following keys:
+
+=over
+
+=item * C<port> see above; defaults to C<5665>.
+
+=item * C<path> see above; defaults to C</>.
+
+=item * C<version> see above; defaults to 1 and is therefore completely
+redundant as long as there is only one API version.
+
+=item * C<insecure> see above; defaults to false
+
+=item * C<cacert> The file name of a PEM-format file containing the certificate
+of the CA that issued the server's HTTPS certificate. As internal monitoring
+servers often use certs from in-house CAs, this still allows for secure peer
+identification instead of using insecure mode.
+
+=back
 
 =back
 
@@ -72,12 +100,13 @@ Returns a new SU::API::Icinga object.
 
 =item login (USERNAME, PASSWORD)
 
-Configure and validate credantials. Please note that user needs at least the permission
-"status/query"
+Configures and validates credentials. Please note that user needs at least the permission
+"status/query". This methos does nothing if it has been called on the sameobject
+before unless L</logout> was called before.
 
 =item logout
 
-Destroy the login session.
+Destroys the login session.
 
 =item login_status
 
@@ -89,7 +118,7 @@ Returns true when logged in, otherwise returns undef.
 
 =item do_request (HTTP METHOD, URI, PARAMS, DATA)
 
-Perform the actual request.
+Performs the actual request.
 
 "PARAMS" is optional and can be any parameters that the Icinga API supports.
 
@@ -160,3 +189,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Johan Carlquist <jocar@su.se>,
 Mikael Nordin <mikael.nordin@su.se>
+Bits and pieces by Matthias Bethke <matthias@towiski.de>
