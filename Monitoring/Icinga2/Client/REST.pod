@@ -1,15 +1,15 @@
 =head1 NAME
 
-SU::API::Icinga2
+Monitoring::Icinga2::Client::REST
 
 =head1 SYNOPSIS
 
     use strict;
     use warnings;
 
-    use SU::API::Icinga2;
+    use Monitoring::Icinga2::Client::REST;
 
-    my $icinga = new SU::API::Icinga2("fqdn",
+    my $icinga = new Monitoring::Icinga2::Client::REST("fqdn",
 	port => $port,
 	path => $path,
 	version => $version,
@@ -47,11 +47,11 @@ Module used to integrate with the REST API that Icinga2 provides.
 
 =over
 
-=item new (FQDN, [ tags ])
+=item new (FQDN, PORT, PATH, VERSION, INSECURE)
 
 =item new (FQDN, PORT, PATH, VERSION, [ INSECURE ])
 
-Returns a new SU::API::Icinga object.
+Monitoring::Icinga2::Client::REST object.
 
 The former calling convention with four mandatory arguments is the old one. If a
 port number is present after the Icinga host, the constructor assumes you want
