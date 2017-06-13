@@ -1,6 +1,6 @@
 =head1 NAME
 
-Monitoring::Icinga2::Client::REST
+Monitoring::Icinga2::Client::REST - REST integration with icinga2
 
 =head1 SYNOPSIS
 
