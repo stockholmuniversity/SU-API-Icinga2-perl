@@ -5,6 +5,8 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
         NAME => "Monitoring::Icinga2::Client::REST",
+        ABSTRACT_FROM => "lib/Monitoring/Icinga2/Client/REST.pod",
+        AUTHOR => ['Johan Carlquist <jocar@su.se>','Mikael Nordin <mikael.nordin@su.se'],
         VERSION_FROM => "lib/Monitoring/Icinga2/Client/REST.pm",
         PREREQ_PM => {
                 "Carp" => 0,
@@ -18,7 +20,7 @@ WriteMakefile(
                 "strict" => 0,
                 "warnings" => 0,
         },
-        LICENSE => "bsd3",
+        LICENSE => "bsd",
         INSTALLDIRS => "$]" < 5.011 ? "perl" : "site",
 );
 
