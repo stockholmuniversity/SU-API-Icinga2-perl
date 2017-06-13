@@ -1,4 +1,4 @@
-package SU::API::Icinga2;
+package Monitoring::Icinga2::Client::REST;
 
 use strict;
 use warnings;

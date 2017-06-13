@@ -1,1 +1,1 @@
-SU/API/Icinga2.pod
+Monitoring/Icinga2/Client/REST.pod
