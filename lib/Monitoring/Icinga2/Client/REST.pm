@@ -113,9 +113,9 @@ sub _encode_param {
             [ qw/ templates zone / ],
         ],
         Downtime => [
-            [ qw/ author comment duration end_time entry_time fixed paused
-                scheduled_by service_name start_time triggered_by triggers
-                was_cancelled  / ],
+            [ qw/ author comment duration end_time entry_time fixed
+                host_name service_name start_time triggers /
+            ],
             [ qw/ templates zone / ],
         ],
         Host => [
@@ -132,6 +132,12 @@ sub _encode_param {
         HostGroup => [
             [ qw/ action_url display_name notes notes_url vars / ],
             [ qw/ groups templates zone / ],
+        ],
+        ScheduledDowntime => [
+            [ qw/ author comment duration fixed host_name ranges
+                service_name /
+            ],
+            [ qw/ templates zone / ],
         ],
         Service => [
             [ qw/ vars action_url check_command check_interval display_name
@@ -170,7 +176,8 @@ sub _encode_param {
         my ( $self, $full, $api_only ) = @_;
         my $result = decode_json( encode_utf8( $self->{res}->content ) );
         my $type   = $result->{results}[0]{type};
-
+        # Do nothing if there is nothing to export
+        return unless $type;
         # We only support certain object types
         return unless exists $type2keys{$type};
 
