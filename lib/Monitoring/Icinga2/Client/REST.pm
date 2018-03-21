@@ -112,6 +112,12 @@ sub _encode_param {
             [ qw/ arguments command env vars timeout / ],
             [ qw/ templates zone / ],
         ],
+        Downtime => [
+            [ qw/ author comment duration end_time entry_time fixed paused
+                scheduled_by service_name start_time triggered_by triggers
+                was_cancelled  / ],
+            [ qw/ templates zone / ],
+        ],
         Host => [
             [ qw/ address6 address check_command display_name event_command
                 action_url notes notes_url vars icon_image icon_image_alt
