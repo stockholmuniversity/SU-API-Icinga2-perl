@@ -25,16 +25,16 @@ Monitoring::Icinga2::Client::REST - REST integration with icinga2
     };
 
 
-    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com", "", $host_object);
+    my $put_result = $icinga->do_request("PUT", "/objects/hosts/localhost.example.com", "", $host_object)
         or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
-    my $post_result = $icinga->do_request("POST", "/objects/hosts/localhost.example.com", "",$host_object);
+    my $post_result = $icinga->do_request("POST", "/objects/hosts/localhost.example.com", "",$host_object)
         or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
-    my $get_result = $icinga->do_request("GET", "/objects/hosts/localhost.example.com");
+    my $get_result = $icinga->do_request("GET", "/objects/hosts/localhost.example.com")
         or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
-    my $delete_result = $icinga->do_request("DELETE", "/objects/hosts/localhost.example.com");
+    my $delete_result = $icinga->do_request("DELETE", "/objects/hosts/localhost.example.com")
         or warn sprintf("%s: %s", $icinga->request_code, $icinga->request_status_line);
 
     $icinga->logout;
