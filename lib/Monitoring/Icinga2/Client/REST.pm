@@ -114,7 +114,7 @@ sub _encode_param {
         ],
         Downtime => [
             [ qw/ author comment duration end_time entry_time fixed
-                host_name service_name start_time triggers /
+                host_name service_name start_time vars triggers /
             ],
             [ qw/ templates zone / ],
         ],
