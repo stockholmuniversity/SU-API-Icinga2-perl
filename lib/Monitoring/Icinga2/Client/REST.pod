@@ -187,6 +187,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =head1 AUTHOR
 
-Johan Carlquist <jocar@su.se>,
+Johan Wassberg <jocar@su.se>,
 Mikael Nordin <mikael.nordin@su.se>
 Bits and pieces by Matthias Bethke <matthias@towiski.de>
