@@ -29,5 +29,9 @@ requires:
   URI::Escape: '0'
   strict: '0'
   warnings: '0'
+resources:
+  bugtracker: http://github.com/stockholmuniversity/SU-API-Icinga2-perl/issues
+  homepage: https://github.com/stockholmuniversity/SU-API-Icinga2-perl
+  license: http://dev.perl.org/licenses/
 version: 2.0.3
 x_serialization_backend: 'CPAN::Meta::YAML version 0.018'

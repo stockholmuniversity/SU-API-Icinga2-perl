@@ -46,6 +46,19 @@
          }
       }
    },
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/stockholmuniversity/SU-API-Icinga2-perl/issues"
+      },
+      "homepage" : "https://github.com/stockholmuniversity/SU-API-Icinga2-perl",
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/stockholmuniversity/SU-API-Icinga2-perl.git",
+         "web": "https://github.com/stockholmuniversity/SU-API-Icinga2-perl"
+      },
    "release_status" : "stable",
    "version" : "2.0.3",
    "x_serialization_backend" : "JSON::PP version 2.97001"
