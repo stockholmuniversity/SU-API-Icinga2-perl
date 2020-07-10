@@ -1,12 +1,13 @@
 {
-   "abstract" : "unknown",
+   "abstract" : "REST integration with icinga2",
    "author" : [
-      "unknown"
+      "Johan Wassberg <jocar@su.se>",
+      "Mikael Nordin <mikael.nordin@su.se"
    ],
-   "dynamic_config" : 0,
-   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.133380",
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 7.34, CPAN::Meta::Converter version 2.150010",
    "license" : [
-      "unknown"
+      "bsd"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -46,5 +47,6 @@
       }
    },
    "release_status" : "stable",
-   "version" : "v0.1.0"
+   "version" : "2.0.3",
+   "x_serialization_backend" : "JSON::PP version 2.97001"
 }
