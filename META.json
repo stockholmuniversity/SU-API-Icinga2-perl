@@ -2,7 +2,7 @@
    "abstract" : "REST integration with icinga2",
    "author" : [
       "Johan Wassberg <jocar@su.se>",
-      "Mikael Nordin <mikael.nordin@su.se"
+      "Mikael Nordin <mikael.nordin@su.se>"
    ],
    "dynamic_config" : 1,
    "generated_by" : "ExtUtils::MakeMaker version 7.34, CPAN::Meta::Converter version 2.150010",
@@ -58,7 +58,8 @@
          "type" : "git",
          "url" : "git://github.com/stockholmuniversity/SU-API-Icinga2-perl.git",
          "web": "https://github.com/stockholmuniversity/SU-API-Icinga2-perl"
-      },
+      }
+   },
    "release_status" : "stable",
    "version" : "2.0.4",
    "x_serialization_backend" : "JSON::PP version 2.97001"
